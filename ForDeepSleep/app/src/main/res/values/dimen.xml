@@ -1,3 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="space">10dp</dimen>
+    <dimen name="space_twice">20dp</dimen>
+
+    <dimen name="height_view_title">50dp</dimen>
+
+    <dimen name="width_seekbar">150dp</dimen>
+
+    <dimen name="font_title">25dp</dimen>
+    <dimen name="font_option">15dp</dimen>
+
+    <dimen name="padding_indent">20dp</dimen>
+    <dimen name="padding_bottom">10dp</dimen>
+
+    <dimen name="margin_seekbar_right">10dp</dimen>
 </resources>
