@@ -79,7 +79,8 @@
                     android:text="@string/btn_right_now"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:onClick="OnRightNowButtonClicked"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TimePicker
@@ -111,6 +112,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/btn30min"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
+                    android:onClick="OnAdd10MinButtonClicked"
                     tools:ignore="MissingConstraints" />
 
                 <Button
@@ -122,6 +124,7 @@
                     app:layout_constraintEnd_toStartOf="@+id/btn1hour"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn10min"
+                    android:onClick="OnAdd30MinButtonClicked"
                     tools:ignore="MissingConstraints" />
 
                 <Button
@@ -133,6 +136,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn30min"
+                    android:onClick="OnAdd1HourButtonClicked"
                     tools:ignore="MissingConstraints" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
