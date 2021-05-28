@@ -7,7 +7,7 @@
                 android:radius="30dp"/>
             <stroke
                 android:width="3dp"
-                android:color="@color/light_navy"/>
+                android:color="@color/colorPrimaryDark"/>
         </shape>
     </item>
 </selector>

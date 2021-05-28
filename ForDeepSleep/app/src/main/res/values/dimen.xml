@@ -4,6 +4,7 @@
     <dimen name="space_twice">20dp</dimen>
 
     <dimen name="height_view_title">50dp</dimen>
+    <dimen name="height_recycler_item">80dp</dimen>
 
     <dimen name="width_seekbar">150dp</dimen>
 
