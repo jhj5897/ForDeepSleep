@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">For Deep Sleep</string>
+    <string name="app_alarm_page">알람 목록</string>
+
+    <string name="title_timer">언제 잘 예정인가요?</string>
+    <string name="title_options">얼마큼 잘건가요?</string>
+    <string name="title_alarm">알람음</string>
+    <string name="title_sound">알람소리</string>
+    <string name="title_vibration">진동</string>
+
+    <string name="option_right_now">지금 당장!</string>
+    <string name="option_10min">+10분</string>
+    <string name="option_30min">+30분</string>
+    <string name="option_1hour">+1시간</string>
+</resources>
