@@ -5,19 +5,20 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
+import java.lang.StringBuilder
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var timePicker: TimePicker
-
-    private val periodArray = listOf<Int>(90, 180, 270, 360, 450, 540)
+    private var selectedItemIndex = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,40 +39,43 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.textViewPeriod.setOnClickListener {
-            var selectItems = ArrayList<String>()
-
-            var builder = AlertDialog.Builder(this)
-            builder.setTitle("숙면 시간")
-            builder.setMultiChoiceItems(
-                dataArr,
-                null,
-                object : DialogInterface.OnMultiChoiceClickListener {
-                    override fun onClick(dialog: DialogInterface?, int: Int, isChecked: Boolean) {
-                        if (isChecked) {
-                            selectItems.add(int)
-                        } else if (selectItems.contains(int))
-                            selectItems.remove(int)
-                    }
-                }
-            )
-
-            var setTextListener = DialogInterface.OnClickListener{_, which ->
-                binding.textViewPeriod.text=""
-                for(i in 0 until selectItems.size) {
-                    binding.textViewPeriod.append()
-                }
-            }
-
-            builder.setPositiveButton("확인")
-
+        binding.timePicker.setOnTimeChangedListener { timePicker, i, j ->
+            binding.textViewPeriod.text=""
+            selectedItemIndex.clear()
         }
+
     }
 
 
-    fun OnRightNowButtonClicked(view: View) {
-        Toast.makeText(this, "On Right Now Button Clicked", Toast.LENGTH_SHORT).show()
+    fun GetTimeFromTP(): Calendar {
+        val timePicker = binding.timePicker
 
+        var now: Calendar = Calendar.getInstance()
+        now.time = Date(System.currentTimeMillis())
+        var calendar: Calendar = now.clone() as Calendar
+
+        //현재 시간에서 타임피커의 시간, 분으로 교체
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            calendar.set(Calendar.HOUR_OF_DAY, timePicker.hour)
+            calendar.set(Calendar.MINUTE, timePicker.minute)
+        } else {
+            calendar.set(Calendar.HOUR_OF_DAY, timePicker.currentHour)
+            calendar.set(Calendar.MINUTE, timePicker.currentMinute)
+        }
+
+        //교체한 시간이 now보다 이전이면 하루를 추가
+        if (calendar.before(now)) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+
+        //알람 울리는 시간에 대비해 sec, millisec = 0
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar
+    }
+
+    fun OnRightNowButtonClicked(view: View) {
         val timeNow = Calendar.getInstance()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -85,20 +89,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun OnAdd10MinButtonClicked(view: View) {
-        Toast.makeText(this, "On Add 10Min Button Clicked", Toast.LENGTH_SHORT).show()
-
         addMinOnTP(10)
     }
 
     fun OnAdd30MinButtonClicked(view: View) {
-        Toast.makeText(this, "On Add 10Min Button Clicked", Toast.LENGTH_SHORT).show()
-
         addMinOnTP(30)
     }
 
     fun OnAdd1HourButtonClicked(view: View) {
-        Toast.makeText(this, "On Add 10Min Button Clicked", Toast.LENGTH_SHORT).show()
-
         addMinOnTP(60)
     }
 
@@ -117,7 +115,53 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun callMultipleInent(view: View) {
+    fun OnCheckboxDialogClicked(view: View) {
+        selectedItemIndex.clear()
 
+        val orglTime = GetTimeFromTP()
+        val periodStringArray = listOf<String>("1시간 30분", "3시간", "4시간 30분", "6시간", "7시간 30분", "9시간")
+
+
+        var items = Array<String>(6){ i ->
+            val min = 90 * (i + 1)
+
+            var orglTimeClone = orglTime.clone() as Calendar
+            orglTimeClone.add(Calendar.HOUR_OF_DAY, min / 60)
+            orglTimeClone.add(Calendar.MINUTE, min % 60)
+
+            var str = SimpleDateFormat("hh:mm a").format(orglTimeClone.time)
+                .toString() + " (%s)".format(periodStringArray[i])
+
+            str
+        }
+
+        var builder = AlertDialog.Builder(this)
+        builder.setTitle("숙면 시간")
+        builder.setMultiChoiceItems(
+            items,
+            null,
+            object : DialogInterface.OnMultiChoiceClickListener {
+                override fun onClick(p0: DialogInterface?, i: Int, b: Boolean) {
+                    if (b) {
+                        selectedItemIndex.add(items[i])
+                    } else if (selectedItemIndex.contains(items[i])) {
+                        selectedItemIndex.remove(items[i])
+                    }
+                }
+            })
+
+        var listener = DialogInterface.OnClickListener{_, which ->
+            var str = StringBuilder()
+            for(i in 0 until selectedItemIndex.size) {
+                str.append(selectedItemIndex.get(i)+"\n")
+            }
+            binding.textViewPeriod.text = str.toString()
+        }
+
+
+        builder.setPositiveButton("확인", listener)
+        builder.setNegativeButton("취소", null)
+        builder.show()
     }
+
 }
