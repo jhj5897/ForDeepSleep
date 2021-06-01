@@ -8,7 +8,7 @@
 
     <dimen name="width_seekbar">150dp</dimen>
 
-    <dimen name="font_title">25dp</dimen>
+    <dimen name="font_title">20dp</dimen>
     <dimen name="font_option">15dp</dimen>
 
     <dimen name="padding_indent">20dp</dimen>

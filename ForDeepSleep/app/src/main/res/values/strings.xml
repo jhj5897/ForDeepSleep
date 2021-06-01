@@ -16,7 +16,7 @@
     <string name="btn_add_30min">+30분</string>
     <string name="btn_add_1hour">+1시간</string>
     <string name="btn_save">저장</string>
-    <string name="btn_initialize">초기화</string>
+    <string name="btn_cancel">취소</string>
     <string name="btn_delete">삭제</string>
 
     <string name="sample_option">hh시간 mm분</string>
