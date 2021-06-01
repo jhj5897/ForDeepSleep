@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/action_exist_alarm"
+        app:showAsAction="always"
         android:icon="@drawable/ic_alarm_check"
         android:title="@string/action_exist_alarm"
-        app:showAsAction="always" />
+        android:visible="false"/>
+
+    <item
+        android:id="@+id/action_empty_alarm"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_alarm_empty"
+        android:title="@string/action_empty_alarm"
+        android:visible="false"/>
 </menu>

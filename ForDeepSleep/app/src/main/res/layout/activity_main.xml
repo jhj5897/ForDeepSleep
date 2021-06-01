@@ -22,7 +22,8 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="wrap_content"
+            app:menu="@menu/alarm_menu"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
@@ -63,7 +64,6 @@
                     android:id="@+id/titleTimePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:text="@string/title_time_picker"
                     android:textSize="@dimen/font_title"
                     android:textStyle="bold"
@@ -146,7 +146,6 @@
                 android:id="@+id/titlePeriod"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:padding="@dimen/space"
                 android:text="@string/title_period"
                 android:textSize="@dimen/font_title"
@@ -165,7 +164,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/sample_option"
                 android:textSize="@dimen/font_option"
-                android:onClick="OnCheckboxDialogClicked"
+                android:onClick="OnCheckboxDialogClick"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/titlePeriod" />
@@ -177,6 +176,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_view"
                 android:padding="@dimen/space_twice"
+                android:onClick="OnAlarmRingtoneClick"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewPeriod">
@@ -185,7 +185,6 @@
                     android:id="@+id/titleAlarm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:text="@string/title_alarm"
                     android:textSize="@dimen/font_title"
                     android:textStyle="bold"
@@ -222,7 +221,6 @@
                     android:id="@+id/titleVolume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:text="@string/title_volume"
                     android:textSize="@dimen/font_title"
                     android:textStyle="bold"
@@ -244,13 +242,25 @@
                     android:id="@+id/textViewVolume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:text="@string/sample_volume"
                     android:textSize="@dimen/font_option"
+                    android:layout_marginRight="@dimen/space"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/btnRingtonePlay"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+                <ImageButton
+                    android:id="@+id/btnRingtonePlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_play_circle"
+                    android:background="@android:color/transparent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints"/>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -269,7 +279,6 @@
                     android:id="@+id/titleVibration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:text="@string/title_vibration"
                     android:textSize="@dimen/font_title"
                     android:textStyle="bold"
@@ -278,17 +287,14 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="MissingConstraints" />
 
-                <TextView
-                    android:id="@+id/textViewVibration"
+                <Switch
+                    android:id="@+id/swtichVibration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@string/sample_vibration"
-                    android:textSize="@dimen/font_option"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints" />
+                    tools:ignore="MissingConstraints"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -305,21 +311,22 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/border_normal_button"
+            android:text="@string/btn_cancel"
+            android:textColor="@color/colorAccent" />
+
+        <Button
             android:id="@+id/btnSave"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/border_normal_button"
             android:text="@string/btn_save"
-            android:textColor="@color/colorAccent" />
-
-        <Button
-            android:id="@+id/btnInitialize"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/border_normal_button"
-            android:text="@string/btn_initialize"
+            android:onClick="OnSaveButtonClicked"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
 
