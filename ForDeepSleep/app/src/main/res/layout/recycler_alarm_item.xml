@@ -12,10 +12,13 @@
         android:id="@+id/textAlarmTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="@string/sample_alarm_time"
         android:textSize="@dimen/font_title"
+        app:layout_constraintBottom_toTopOf="@+id/textLeftTime"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread" />
 
     <TextView
         android:id="@+id/textLeftTime"
@@ -24,18 +27,19 @@
         android:text="@string/sample_left_time"
         android:textSize="@dimen/font_option"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textAlarmTime" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/border_primary_stroke"
+        android:padding="@dimen/space"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_close"
-        android:padding="@dimen/space"
-        android:background="@drawable/border_primary_stroke"
         tools:ignore="VectorDrawableCompat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

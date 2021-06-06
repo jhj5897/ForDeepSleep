@@ -20,19 +20,19 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.room.Room
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class MainActivity : AppCompatActivity() {
     private val ALARM_REQUEST_CODE: Int = 101
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var db: AppDatabase
     private lateinit var timePicker: TimePicker
     private var selectedItemIndex = mutableListOf<Int>()
-    var alarmDataList = mutableListOf<AlarmData>()  //sqlite 에서 데이터 불러오기
 
     private lateinit var rt: Ringtone
     private lateinit var uri: Uri
@@ -48,7 +48,11 @@ class MainActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
         timePicker = binding.timePicker
 
-        updateToolbar()
+        db = AppDatabase.getInstance(this)
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_exist_alarm -> {
@@ -91,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(sb: SeekBar?, progress: Int, b: Boolean) {
                 seekbarVolume.text = progress.toString()
                 audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0)
-
             }
 
             override fun onStartTrackingTouch(s: SeekBar?) {
@@ -105,14 +108,16 @@ class MainActivity : AppCompatActivity() {
         binding.btnRingtonePlay.setOnClickListener {
             if (btnRingtonePlayClicked) {
                 (it as ImageButton).setImageResource(R.drawable.ic_play_circle)
-                //음악 멈춤 rt.stop()
-                Toast.makeText(this, "Ringtone stop", Toast.LENGTH_SHORT).show()
+                rt.stop()
                 btnRingtonePlayClicked = false
             } else {
                 (it as ImageButton).setImageResource(R.drawable.ic_pause_circle)
-                //음악 재생 rt.play()
-                Toast.makeText(this, "Ringtone start", Toast.LENGTH_SHORT).show()
+                rt.play()
                 btnRingtonePlayClicked = true
+                Log.d(
+                    "alarm",
+                    "now volume : " + audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+                )
             }
         }
 
@@ -122,22 +127,22 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        Toast.makeText(this, "메뉴 생성", Toast.LENGTH_SHORT).show()
-
-        if (alarmDataList.size == 0) {
-            binding.toolbar.menu.findItem(R.id.action_exist_alarm).setVisible(false)
-            binding.toolbar.menu.findItem(R.id.action_empty_alarm).setVisible(true)
-
-        } else {
-            binding.toolbar.menu.findItem(R.id.action_exist_alarm).setVisible(true)
-            binding.toolbar.menu.findItem(R.id.action_empty_alarm).setVisible(false)
-
-        }
+        menuInflater.inflate(R.menu.alarm_menu, menu)
 
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        updateToolbar()
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onResume() {
+        invalidateOptionsMenu()
+        super.onResume()
+    }
 
     fun GetTimeFromTP(): Calendar {
         val timePicker = binding.timePicker
@@ -229,23 +234,17 @@ class MainActivity : AppCompatActivity() {
 
         var builder = AlertDialog.Builder(this)
         builder.setTitle("숙면 시간")
-        builder.setMultiChoiceItems(
-            items,
-            null,
-            object : DialogInterface.OnMultiChoiceClickListener {
-                override fun onClick(p0: DialogInterface?, i: Int, b: Boolean) {
-                    if (b) {
-                        Log.d("TAG", "add : " + i)
-                        selectedItemIndex.add(i)
-                    } else if (selectedItemIndex.contains(i)) {
-                        Log.d("TAG", "remove : " + i)
-                        selectedItemIndex.remove(i)
-                    }
-                }
-            })
+        builder.setMultiChoiceItems(items, null) { dialogInterface, i, b ->
+            if (b) {
+                selectedItemIndex.add(i)
+            } else if (selectedItemIndex.contains(i)) {
+                selectedItemIndex.remove(i)
+            }
+        }
 
         var listener = DialogInterface.OnClickListener { _, which ->
             var str = StringBuilder()
+            selectedItemIndex.sort()
             for (i in selectedItemIndex) {
                 str.append(items.get(i) + "\n")
             }
@@ -283,11 +282,10 @@ class MainActivity : AppCompatActivity() {
 
 
     fun updateToolbar() {
-        //sqlite에서 가져온 알람 개수가 1개 이상인 경우
         val emptyItem = binding.toolbar.menu.findItem(R.id.action_empty_alarm)
         val existItem = binding.toolbar.menu.findItem(R.id.action_exist_alarm)
 
-        if (selectedItemIndex.size > 0) {
+        if (db.alarmDao().getAllCount() > 0) {
             emptyItem.setVisible(false)
             existItem.setVisible(true)
         } else {
@@ -312,8 +310,9 @@ class MainActivity : AppCompatActivity() {
                 orglTimeClone.add(Calendar.HOUR_OF_DAY, min / 60)
                 orglTimeClone.add(Calendar.MINUTE, min % 60)
 
-                alarmDataList.add(
-                    AlarmData(
+
+                db.alarmDao().insertAll(
+                    Alarm(
                         null,
                         orglTimeClone,
                         uri,
@@ -323,13 +322,13 @@ class MainActivity : AppCompatActivity() {
                 )
             }
 
-            updateToolbar()
-
             //저장 완료 후 화면 초기화
             Toast.makeText(this, "알람이 저장되었습니다.", Toast.LENGTH_SHORT).show()
             OnRightNowButtonClicked(view)
             selectedItemIndex.clear()
             binding.textViewPeriod.text = ""
+
+            invalidateOptionsMenu()
         }
 
     }

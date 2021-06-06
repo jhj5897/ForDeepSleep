@@ -1,13 +1,19 @@
 package org.jhj.fordeepsleep
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import org.jhj.fordeepsleep.databinding.ActivityAlarmListBinding
 
 class AlarmListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAlarmListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAlarmListBinding.inflate(layoutInflater)
@@ -20,22 +26,10 @@ class AlarmListActivity : AppCompatActivity() {
             finish()
         }
 
-        var adapter  = AlarmListAdapter()
-        adapter.alarmList = loadAlarmList()
+        val adapter = AlarmListAdapter(AppDatabase.getInstance(this).alarmDao().getAll())
         binding.recyclerViewAlarm.adapter = adapter
         binding.recyclerViewAlarm.layoutManager = LinearLayoutManager(this)
+
     }
 
-
-    fun loadAlarmList():MutableList<Long> {
-        val alarms:MutableList<Long> = mutableListOf()
-
-        for (i in 1..10) {
-            val time = System.currentTimeMillis()
-            alarms.add(time)
-        }
-
-
-        return alarms
-    }
 }
