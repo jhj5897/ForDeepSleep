@@ -47,7 +47,7 @@
                 android:id="@+id/layoutTimePickerTitle"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:padding="@dimen/space"
+                android:padding="@dimen/space8"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_time_picker"
-                    android:textSize="@dimen/font_title"
+                    android:textSize="@dimen/font_big"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -67,12 +67,12 @@
                     android:id="@+id/btnRightNow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/border_primary_stroke"
+                    android:background="@drawable/rectangle_radius_stroke"
                     android:text="@string/btn_right_now"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:onClick="OnRightNowButtonClicked"/>
+                    android:onClick="onRightNowButtonClicked"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TimePicker
@@ -100,11 +100,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/btn_add_10min"
-                    android:background="@drawable/border_primary_stroke"
+                    android:background="@drawable/rectangle_radius_stroke"
                     app:layout_constraintEnd_toStartOf="@+id/btn30min"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:onClick="OnAdd10MinButtonClicked"
+                    android:onClick="onAdd10MinButtonClicked"
                     tools:ignore="MissingConstraints" />
 
                 <Button
@@ -112,11 +112,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/btn_add_30min"
-                    android:background="@drawable/border_primary_stroke"
+                    android:background="@drawable/rectangle_radius_stroke"
                     app:layout_constraintEnd_toStartOf="@+id/btn1hour"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn10min"
-                    android:onClick="OnAdd30MinButtonClicked"
+                    android:onClick="onAdd30MinButtonClicked"
                     tools:ignore="MissingConstraints" />
 
                 <Button
@@ -124,11 +124,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/btn_add_1hour"
-                    android:background="@drawable/border_primary_stroke"
+                    android:background="@drawable/rectangle_radius_stroke"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn30min"
-                    android:onClick="OnAdd1HourButtonClicked"
+                    android:onClick="onAdd1HourButtonClicked"
                     tools:ignore="MissingConstraints" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -138,9 +138,9 @@
                 android:id="@+id/titlePeriod"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/space"
+                android:padding="@dimen/space8"
                 android:text="@string/title_period"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/font_big"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -155,8 +155,8 @@
                 android:paddingLeft="@dimen/padding_indent"
                 android:gravity="center_vertical"
                 android:text="@string/sample_option"
-                android:textSize="@dimen/font_option"
-                android:onClick="OnCheckboxDialogClick"
+                android:textSize="@dimen/font_medium"
+                android:onClick="onCheckboxDialogClick"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/titlePeriod" />
@@ -167,8 +167,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_view"
-                android:padding="@dimen/space_twice"
-                android:onClick="OnAlarmRingtoneClick"
+                android:padding="@dimen/space16"
+                android:onClick="onAlarmRingtoneClick"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewPeriod">
@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_alarm"
-                    android:textSize="@dimen/font_title"
+                    android:textSize="@dimen/font_big"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -190,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sample_alarm"
-                    android:textSize="@dimen/font_option"
+                    android:textSize="@dimen/font_medium"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -204,7 +204,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_view"
-                android:padding="@dimen/space_twice"
+                android:padding="@dimen/space16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layoutAlarm">
@@ -214,7 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_volume"
-                    android:textSize="@dimen/font_title"
+                    android:textSize="@dimen/font_big"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -235,8 +235,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sample_volume"
-                    android:textSize="@dimen/font_option"
-                    android:layout_marginRight="@dimen/space"
+                    android:textSize="@dimen/font_medium"
+                    android:layout_marginRight="@dimen/space8"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/btnRingtonePlay"
                     app:layout_constraintTop_toTopOf="parent"
@@ -262,7 +262,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_view"
-                android:padding="@dimen/space_twice"
+                android:padding="@dimen/space16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layoutVolume">
@@ -272,7 +272,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_vibration"
-                    android:textSize="@dimen/font_title"
+                    android:textSize="@dimen/font_big"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -307,7 +307,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/border_normal_button"
+            android:background="@drawable/rectangle_solid"
             android:text="@string/btn_cancel"
             android:textColor="@color/colorAccent" />
 
@@ -316,9 +316,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/border_normal_button"
+            android:background="@drawable/rectangle_solid"
             android:text="@string/btn_save"
-            android:onClick="OnSaveButtonClicked"
+            android:onClick="onSaveButtonClicked"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
 

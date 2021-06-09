@@ -1,15 +1,10 @@
 package org.jhj.fordeepsleep
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import org.jhj.fordeepsleep.databinding.ActivityAlarmListBinding
+import org.jhj.fordeepsleep.room.AppDatabase
 
 class AlarmListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAlarmListBinding

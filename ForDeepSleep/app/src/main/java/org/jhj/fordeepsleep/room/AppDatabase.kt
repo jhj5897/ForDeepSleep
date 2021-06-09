@@ -1,4 +1,4 @@
-package org.jhj.fordeepsleep
+package org.jhj.fordeepsleep.room
 
 import android.content.Context
 import androidx.room.Database
@@ -7,7 +7,8 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 //https://android--code.blogspot.com/2019/02/android-kotlin-room-singleton-example.html
-@Database(entities = [Alarm::class], version = 1)
+//https://todaycode.tistory.com/35
+@Database(entities = [Alarm::class], version = 2)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun alarmDao(): AlarmDao
@@ -17,6 +18,7 @@ abstract class AppDatabase : RoomDatabase() {
         fun getInstance(context: Context): AppDatabase {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context, AppDatabase::class.java, "room_alarms")
+                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
             }
@@ -24,4 +26,6 @@ abstract class AppDatabase : RoomDatabase() {
             return INSTANCE as AppDatabase
         }
     }
+
+
 }

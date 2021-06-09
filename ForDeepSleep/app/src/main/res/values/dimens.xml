@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="space">10dp</dimen>
-    <dimen name="space_twice">20dp</dimen>
+    <dimen name="space8">8dp</dimen>
+    <dimen name="space16">16dp</dimen>
+    <dimen name="space24">24dp</dimen>
+    <dimen name="space36">36dp</dimen>
 
-    <dimen name="height_view_title">50dp</dimen>
+    <dimen name="height_view_title">48dp</dimen>
     <dimen name="height_recycler_item">80dp</dimen>
 
-    <dimen name="width_seekbar">150dp</dimen>
+    <dimen name="width_seekbar">160dp</dimen>
 
-    <dimen name="font_title">20dp</dimen>
-    <dimen name="font_option">15dp</dimen>
+    <dimen name="font_big">24dp</dimen>
+    <dimen name="font_medium">16dp</dimen>
 
-    <dimen name="padding_indent">20dp</dimen>
-    <dimen name="padding_bottom">10dp</dimen>
+    <dimen name="padding_indent">16dp</dimen>
+    <dimen name="padding_bottom">8dp</dimen>
 
-    <dimen name="margin_seekbar_right">10dp</dimen>
+    <dimen name="margin_seekbar_right">8dp</dimen>
 </resources>

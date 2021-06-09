@@ -1,4 +1,4 @@
-package org.jhj.fordeepsleep
+package org.jhj.fordeepsleep.room
 
 import android.net.Uri
 import androidx.room.TypeConverter
