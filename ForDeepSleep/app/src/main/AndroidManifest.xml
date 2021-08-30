@@ -14,7 +14,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".AlarmRingingActivity" android:showOnLockScreen="true" android:turnScreenOn="true"/>
+
+        <service
+            android:name=".service.AlarmIntentService"
+            android:exported="false" />
+
+        <activity
+            android:name=".threadTestActivity"/>
+        <activity
+            android:name=".AlarmRingingActivity"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true" />
         <activity android:name=".AlarmListActivity" />
         <activity android:name=".MainActivity" />
         <activity
@@ -35,6 +45,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".service.AlarmService" />
     </application>
 
 </manifest>
