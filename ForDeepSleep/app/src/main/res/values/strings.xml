@@ -24,6 +24,4 @@
     <string name="sample_alarm">default 알람음</string>
     <string name="sample_volume">00</string>
     <string name="sample_vibration">default 진동</string>
-    <string name="sample_alarm_time">MM월 dd일 hh시간 mm분</string>
-    <string name="sample_left_time">hh시간 mm분 남았습니다.</string>
 </resources>
