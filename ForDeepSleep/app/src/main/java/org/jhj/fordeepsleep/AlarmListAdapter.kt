@@ -60,9 +60,9 @@ class AlarmListAdapter(var alarmList: MutableList<Alarm>) :
             update(observable, null)
 
             binding.textAlarmTime.text =
-                SimpleDateFormat("MM월 dd일 HH시 mm분").format(alarm.alarmTime.timeInMillis)
+                SimpleDateFormat("MM월 dd일 HH시 mm분").format(alarm.alarmTime)
 
-            leftTime = alarm.alarmTime.timeInMillis - System.currentTimeMillis()
+            leftTime = alarm.alarmTime - System.currentTimeMillis()
 
             binding.btnDelete.setOnClickListener {
                 AppDatabase.getInstance(binding.root.context.applicationContext).alarmDao()

@@ -11,7 +11,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
@@ -36,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var timePicker: TimePicker
     private lateinit var rt: Ringtone
-    private lateinit var uri: Uri
+    private var uri: Uri? = null
 
     private var selectedItemIndex = mutableListOf<Int>()
 
@@ -51,9 +50,9 @@ class MainActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
         timePicker = binding.timePicker
 
-        db = AppDatabase.getInstance(this)
+        db = AppDatabase.getInstance(applicationContext)
 
-        AlarmFunction.init(this)
+        AlarmFunction.init(applicationContext)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -287,7 +286,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == ALARM_REQUEST_CODE && resultCode == RESULT_OK) {
-            uri = data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)!!
+            uri = data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
 
             rt = RingtoneManager.getRingtone(this, uri)
             binding.textViewAlarm.text = rt.getTitle(this)
@@ -313,15 +312,14 @@ class MainActivity : AppCompatActivity() {
 
                 val alarm = Alarm(
                     null,
-                    orgTimeClone,
-                    uri,
+                    orgTimeClone.timeInMillis,
+                    uri.toString(),
                     binding.textViewVolume.text.toString().toFloat() / MAX_VOLUME,
                     binding.swtichVibration.isChecked
                 )
 
                 db.alarmDao().insertAll(alarm)
                 AlarmFunction.setAlarmIntent(db.alarmDao().getLastAlarm())
-
             }
 
             //저장 완료 후 화면 초기화

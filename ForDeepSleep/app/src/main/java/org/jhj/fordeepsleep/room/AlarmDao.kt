@@ -14,6 +14,9 @@ interface AlarmDao {
     @Query("SELECT * FROM alarms ORDER BY id DESC LIMIT 1")
     fun getLastAlarm():Alarm
 
+    @Query("SELECT * FROM alarms WHERE id=:id")
+    fun getAlarmById(id:Int):Alarm
+
     @Insert
     fun insertAll(alarm: Alarm)
 

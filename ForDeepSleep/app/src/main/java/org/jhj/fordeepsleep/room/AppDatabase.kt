@@ -1,6 +1,7 @@
 package org.jhj.fordeepsleep.room
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,7 +9,7 @@ import androidx.room.TypeConverters
 
 //https://android--code.blogspot.com/2019/02/android-kotlin-room-singleton-example.html
 //https://todaycode.tistory.com/35
-@Database(entities = [Alarm::class], version = 2)
+@Database(entities = [Alarm::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun alarmDao(): AlarmDao

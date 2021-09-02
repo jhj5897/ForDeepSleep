@@ -15,12 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <service
-            android:name=".service.AlarmIntentService"
-            android:exported="false" />
-
-        <activity
-            android:name=".threadTestActivity"/>
+        <activity android:name=".threadTestActivity" />
         <activity
             android:name=".AlarmRingingActivity"
             android:showOnLockScreen="true"
@@ -47,6 +42,7 @@
         </receiver>
 
         <service android:name=".service.AlarmService" />
+
     </application>
 
 </manifest>
