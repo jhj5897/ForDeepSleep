@@ -3,6 +3,7 @@ package org.jhj.fordeepsleep
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.Ringtone
 import android.media.RingtoneManager
@@ -11,6 +12,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
@@ -78,13 +80,14 @@ class MainActivity : AppCompatActivity() {
         timePicker.setOnTimeChangedListener { _, _, _ -> clearPeriodTextAndList() }
 
         //알람음 초기화
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        rt = RingtoneManager.getRingtone(this, uri)
+        setRingtoneUri(uri!!)
+
         binding.textViewAlarm.text = rt.getTitle(this)
 
         //Seekbar 초기화
         val seekbarVolume = binding.textViewVolume
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         MAX_VOLUME = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
 
         val seekbar = binding.seekBarVolume.apply {
@@ -282,13 +285,26 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, ALARM_REQUEST_CODE)
     }
 
+    fun setRingtoneUri(uri:Uri) {
+        rt = RingtoneManager.getRingtone(this, uri)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            rt.audioAttributes =
+                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_ALARM).build()
+        } else {
+            rt.streamType = AudioManager.STREAM_ALARM
+        }
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == ALARM_REQUEST_CODE && resultCode == RESULT_OK) {
             uri = data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            setRingtoneUri(uri!!)
 
-            rt = RingtoneManager.getRingtone(this, uri)
             binding.textViewAlarm.text = rt.getTitle(this)
 
         }
@@ -296,6 +312,8 @@ class MainActivity : AppCompatActivity() {
 
 
     fun onSaveButtonClicked(view: View) {
+        if(rt.isPlaying)
+            binding.btnRingtonePlay.performClick()
 
         if (selectedItemIndex.all { false }) {
             Toast.makeText(this, "알람 시간을 설정해주세요.", Toast.LENGTH_SHORT).show()
@@ -342,7 +360,7 @@ class MainActivity : AppCompatActivity() {
             doubleBackToExitPressedOn = true
             Toast.makeText(this, "한 번 더 뒤로가기를 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
 
-            Handler().postDelayed({ doubleBackToExitPressedOn = false }, 2000)
+            Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOn = false }, 2000)
         }
     }
 }

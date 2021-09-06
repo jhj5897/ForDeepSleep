@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.jhj.fordeepsleep.room.Alarm
+import org.jhj.fordeepsleep.service.AlarmService
 import org.jhj.fordeepsleep.service.BootReceiver
 import java.io.Serializable
 
@@ -19,13 +20,13 @@ class AlarmFunction {
 
         private lateinit var context: Context
         private lateinit var alarmManager:AlarmManager
-        private lateinit var receiverIntent:Intent
+        private lateinit var serviceIntent:Intent
 
 
         fun init(context:Context) {
             this.context = context
             alarmManager = context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-            receiverIntent = Intent(context, BootReceiver::class.java)
+            serviceIntent = Intent(context, AlarmService::class.java)
         }
 
 
@@ -34,15 +35,17 @@ class AlarmFunction {
 
             var bundle = Bundle()
             bundle.putParcelable(ALARM_INSTANCE, alarm)
-            receiverIntent.putExtra(ALARM_BUNDLE, bundle)
-            val pendingIntent = PendingIntent.getBroadcast(context, alarm.id!!, receiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            serviceIntent.putExtra(ALARM_BUNDLE, bundle)
+
+            val pendingIntent = PendingIntent.getService(context, alarm.id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
 //            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.alarmTime.timeInMillis, pendingIntent)
             alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5000, pendingIntent)
         }
 
         fun deleteAlarmIntent(id:Int?) {
-            val pendingIntent = PendingIntent.getBroadcast(context, id!!, receiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent = PendingIntent.getService(context, id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
             alarmManager.cancel(pendingIntent)
         }
     }

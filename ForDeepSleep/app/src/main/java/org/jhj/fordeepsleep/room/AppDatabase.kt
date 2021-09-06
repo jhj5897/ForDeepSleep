@@ -10,7 +10,6 @@ import androidx.room.TypeConverters
 //https://android--code.blogspot.com/2019/02/android-kotlin-room-singleton-example.html
 //https://todaycode.tistory.com/35
 @Database(entities = [Alarm::class], version = 3)
-@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun alarmDao(): AlarmDao
 
