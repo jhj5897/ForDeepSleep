@@ -1,24 +1,25 @@
 package org.jhj.fordeepsleep
 
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.WindowManager
 import com.bumptech.glide.Glide
 import org.jhj.fordeepsleep.databinding.ActivityAlarmRingingBinding
 import org.jhj.fordeepsleep.service.AlarmService
+import java.text.SimpleDateFormat
+import java.util.*
 
 class AlarmRingingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAlarmRingingBinding
-    private lateinit var handler:Handler
+    private lateinit var handler: Handler
 
-    private val finishBR = object: BroadcastReceiver() {
+    private val finishBR = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             finish()
         }
@@ -41,8 +42,24 @@ class AlarmRingingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAlarmRingingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+            (getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager)
+                .requestDismissKeyguard(this, null)
+        } else {
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        val currentTime = System.currentTimeMillis()
+        binding.textCurrentTime.text = SimpleDateFormat("a hh시 mm분", Locale.getDefault()).format(currentTime)
+        binding.textCurrentDate.text = SimpleDateFormat("MM월 dd일 E요일", Locale.getDefault()).format(currentTime)
 
         handler = Handler(Looper.getMainLooper())
 
@@ -70,6 +87,9 @@ class AlarmRingingActivity : AppCompatActivity() {
     private fun stopRinging() {
         thread.interrupt()
         stopService(Intent(this, AlarmService::class.java))
-        finish()
+    }
+
+    override fun onBackPressed() {
+        stopRinging()
     }
 }
