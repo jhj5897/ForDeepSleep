@@ -23,8 +23,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_height="wrap_content"></androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -68,11 +67,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/rectangle_radius_stroke"
+                    android:onClick="onRightNowButtonClicked"
                     android:text="@string/btn_right_now"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:onClick="onRightNowButtonClicked"/>
+                    app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TimePicker
@@ -99,36 +98,36 @@
                     android:id="@+id/btn10min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_add_10min"
                     android:background="@drawable/rectangle_radius_stroke"
+                    android:onClick="onAdd10MinButtonClicked"
+                    android:text="@string/btn_add_10min"
                     app:layout_constraintEnd_toStartOf="@+id/btn30min"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:onClick="onAdd10MinButtonClicked"
                     tools:ignore="MissingConstraints" />
 
                 <Button
                     android:id="@+id/btn30min"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_add_30min"
                     android:background="@drawable/rectangle_radius_stroke"
+                    android:onClick="onAdd30MinButtonClicked"
+                    android:text="@string/btn_add_30min"
                     app:layout_constraintEnd_toStartOf="@+id/btn1hour"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn10min"
-                    android:onClick="onAdd30MinButtonClicked"
                     tools:ignore="MissingConstraints" />
 
                 <Button
                     android:id="@+id/btn1hour"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_add_1hour"
                     android:background="@drawable/rectangle_radius_stroke"
+                    android:onClick="onAdd1HourButtonClicked"
+                    android:text="@string/btn_add_1hour"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/btn30min"
-                    android:onClick="onAdd1HourButtonClicked"
                     tools:ignore="MissingConstraints" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -151,12 +150,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_view"
-                android:minHeight="@dimen/height_view_title"
-                android:paddingLeft="@dimen/padding_indent"
                 android:gravity="center_vertical"
+                android:lineSpacingExtra="5dp"
+                android:minHeight="@dimen/height_view_title"
+                android:onClick="onCheckboxDialogClick"
+                android:paddingLeft="@dimen/padding_indent"
                 android:text="@string/sample_option"
                 android:textSize="@dimen/font_medium"
-                android:onClick="onCheckboxDialogClick"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/titlePeriod" />
@@ -167,8 +167,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_view"
-                android:padding="@dimen/space16"
                 android:onClick="onAlarmRingtoneClick"
+                android:padding="@dimen/space16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewPeriod">
@@ -234,9 +234,9 @@
                     android:id="@+id/textViewVolume"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/space8"
                     android:text="@string/sample_volume"
                     android:textSize="@dimen/font_medium"
-                    android:layout_marginRight="@dimen/space8"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/btnRingtonePlay"
                     app:layout_constraintTop_toTopOf="parent"
@@ -246,12 +246,12 @@
                     android:id="@+id/btnRingtonePlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_play_circle"
                     android:background="@android:color/transparent"
+                    android:src="@drawable/ic_play_circle"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints"/>
+                    tools:ignore="MissingConstraints" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -286,7 +286,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="MissingConstraints"/>
+                    tools:ignore="MissingConstraints" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -317,8 +317,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/rectangle_solid"
-            android:text="@string/btn_save"
             android:onClick="onSaveButtonClicked"
+            android:text="@string/btn_save"
             android:textColor="@color/colorAccent" />
     </LinearLayout>
 

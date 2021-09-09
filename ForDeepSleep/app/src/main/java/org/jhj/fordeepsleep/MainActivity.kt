@@ -147,7 +147,6 @@ class MainActivity : AppCompatActivity() {
         val timePicker = binding.timePicker
 
         val now: Calendar = Calendar.getInstance()
-        now.time = Date(System.currentTimeMillis())
         val calendar: Calendar = now.clone() as Calendar
 
         //현재 시간에서 타임피커의 시간, 분으로 교체
@@ -159,6 +158,9 @@ class MainActivity : AppCompatActivity() {
             calendar.set(Calendar.MINUTE, timePicker.currentMinute)
         }
 
+
+        //now 시간에서 1분 빼주기(현재 시간일 경우 하루를 추가해버림)
+        now.add(Calendar.MINUTE, -1)
         //교체한 시간이 now보다 이전이면 하루를 추가
         if (calendar.before(now)) {
             calendar.add(Calendar.DAY_OF_MONTH, 1)
@@ -243,14 +245,14 @@ class MainActivity : AppCompatActivity() {
             orgTimeClone.add(Calendar.HOUR_OF_DAY, min / 60)
             orgTimeClone.add(Calendar.MINUTE, min % 60)
 
-            val str = SimpleDateFormat("hh:mm a").format(orgTimeClone.time)
+            val str = SimpleDateFormat("a hh:mm", Locale.getDefault()).format(orgTimeClone.time)
                 .toString() + " (%s)".format(periodStringArray[i])
 
             str
         }
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("숙면 시간")
+        builder.setTitle("시간 선택")
         builder.setMultiChoiceItems(items, null) { _, i, b ->
             if (b) {
                 selectedItemIndex.add(i)

@@ -2,6 +2,7 @@ package org.jhj.fordeepsleep.room
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
 import androidx.room.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,16 +24,12 @@ data class Alarm(
     ) {
     }
 
-    fun getLeftTime():Calendar {
-        var leftTime:Calendar = Calendar.getInstance()
-
-        leftTime.timeInMillis = alarmTime - Calendar.getInstance().timeInMillis
-        
-        return leftTime
+    fun getLeftTimeInMillis():Long {
+        return (alarmTime - Calendar.getInstance().timeInMillis)
     }
 
     override fun toString(): String {
-        return "$id : ${SimpleDateFormat("yyyy-MM-dd HH:mm").format(alarmTime)} | $ringtoneUri | $volume | $vibrationOn"
+        return "$id : ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(alarmTime)} | $ringtoneUri | $volume | $vibrationOn"
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -39,13 +39,15 @@ class AlarmListAdapter(var alarmList: MutableList<Alarm>) :
     inner class Holder(private var binding: RecyclerAlarmItemBinding) :
         RecyclerView.ViewHolder(binding.root), Observer {
         private var leftTime: Long = 0
-        private val leftTimeSDF = SimpleDateFormat("HH시 mm분 ss초 남았습니다.")
+        private val sdf = SimpleDateFormat("HH시 mm분 ss초 남았습니다.").apply {
+            timeZone = TimeZone.getTimeZone("GMT")
+        }
 
         var leftTimeThread = Thread(Runnable {
             try {
                 while (true) {
                     mHandler.post {
-                        binding.textLeftTime.text = leftTimeSDF.format(leftTime)
+                        binding.textLeftTime.text = sdf.format(leftTime)
                     }
                     leftTime -= 1000
                     Thread.sleep(1000)
@@ -60,9 +62,9 @@ class AlarmListAdapter(var alarmList: MutableList<Alarm>) :
             update(observable, null)
 
             binding.textAlarmTime.text =
-                SimpleDateFormat("MM월 dd일 HH시 mm분").format(alarm.alarmTime)
+                SimpleDateFormat("MM월 dd일 a hh시 mm분").format(alarm.alarmTime)
 
-            leftTime = alarm.alarmTime - System.currentTimeMillis()
+            leftTime = alarm.getLeftTimeInMillis()
 
             binding.btnDelete.setOnClickListener {
                 AppDatabase.getInstance(binding.root.context.applicationContext).alarmDao()

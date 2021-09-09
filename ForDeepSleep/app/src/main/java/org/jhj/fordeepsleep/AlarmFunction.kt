@@ -39,13 +39,12 @@ class AlarmFunction {
 
             val pendingIntent = PendingIntent.getService(context, alarm.id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.alarmTime.timeInMillis, pendingIntent)
-            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5000, pendingIntent)
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5000, pendingIntent)
         }
 
         fun deleteAlarmIntent(id:Int?) {
             val pendingIntent = PendingIntent.getService(context, id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
             alarmManager.cancel(pendingIntent)
         }
     }

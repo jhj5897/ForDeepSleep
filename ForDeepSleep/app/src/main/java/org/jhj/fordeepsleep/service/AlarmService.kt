@@ -1,6 +1,5 @@
 package org.jhj.fordeepsleep.service
 
-import android.app.ActivityManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -8,10 +7,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
-import android.os.IBinder
-import android.os.VibrationEffect
-import android.os.Vibrator
+import android.os.*
 import org.jhj.fordeepsleep.AlarmFunction
 import org.jhj.fordeepsleep.AlarmRingingActivity
 import org.jhj.fordeepsleep.MainActivity
@@ -22,7 +18,7 @@ class AlarmService : Service() {
     private val VIBRATE = 3000L
     private val WAIT = 1000L
 
-    private lateinit var mediaPlayer: MediaPlayer
+    private val mediaPlayer = MediaPlayer()
     private var vibrator: Vibrator? = null
 
     private lateinit var passedAlarm: Alarm
@@ -40,7 +36,6 @@ class AlarmService : Service() {
         val vibrationOn = passedAlarm.vibrationOn
 
         if (volume != 0f) {
-            mediaPlayer = MediaPlayer()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mediaPlayer.setAudioAttributes(
                     AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -59,14 +54,16 @@ class AlarmService : Service() {
 
         if (vibrationOn) {
             vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            val pattern = longArrayOf(VIBRATE, WAIT, VIBRATE, WAIT, VIBRATE, WAIT)
+            val pattern = longArrayOf(WAIT, VIBRATE)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val vibrationEffect =
-                    VibrationEffect.createWaveform(longArrayOf(VIBRATE), intArrayOf(50), 0)
+                    VibrationEffect.createWaveform(pattern, intArrayOf(50), 0)
                 vibrator?.vibrate(vibrationEffect)
             } else {
-                vibrator?.vibrate(pattern, 0)
+
+                vibrator?.vibrate(
+                    pattern, 0)
             }
         }
 
@@ -79,11 +76,15 @@ class AlarmService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.stop()
-        mediaPlayer.release()
-        vibrator?.cancel()
-
         sendBroadcast(Intent("org.jhj.fordeepsleep.finish"))
         AppDatabase.getInstance(applicationContext).alarmDao().deleteById(passedAlarm.id!!)
+
+        if(mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
+        if(passedAlarm.vibrationOn) {
+            vibrator?.cancel()
+        }
     }
 }
