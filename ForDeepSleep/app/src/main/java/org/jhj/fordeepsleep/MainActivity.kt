@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
@@ -20,29 +21,39 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
+import java.lang.NullPointerException
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private val ALARM_REQUEST_CODE: Int = 101
+    private val RINGTONE_REQUEST_CODE: Int = 101
     private var MAX_VOLUME: Int = 0
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: AppDatabase
 
-    private lateinit var timePicker: TimePicker
     private lateinit var rt: Ringtone
     private var uri: Uri? = null
 
-    private var selectedItemIndex = mutableListOf<Int>()
+    private var selectedItemIndex = BooleanArray(6)
 
     private var doubleBackToExitPressedOn = false
-    private var btnRingtonePlayClicked = false
+
+    private var ringtoneResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                uri = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                setRingtoneUri(uri!!)
+
+                binding.textViewAlarm.text = rt.getTitle(this)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +61,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val toolbar = binding.toolbar
-        timePicker = binding.timePicker
 
         db = AppDatabase.getInstance(applicationContext)
+        TimePickerFunction.getInstance(binding.timePicker)
 
         AlarmFunction.init(applicationContext)
 
@@ -77,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //타임피커 값 변경되면 선택 시간 초기화
-        timePicker.setOnTimeChangedListener { _, _, _ -> clearPeriodTextAndList() }
+        binding.timePicker.setOnTimeChangedListener { _, _, _ -> clearPeriodTextAndList() }
 
         //알람음 초기화
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -111,14 +122,12 @@ class MainActivity : AppCompatActivity() {
 
         //알람음 재생 버튼 클릭 리스너
         binding.btnRingtonePlay.setOnClickListener {
-            btnRingtonePlayClicked = if (btnRingtonePlayClicked) {
+            if (rt.isPlaying) {
                 (it as ImageButton).setImageResource(R.drawable.ic_play_circle)
                 rt.stop()
-                false
             } else {
                 (it as ImageButton).setImageResource(R.drawable.ic_pause_circle)
                 rt.play()
-                true
             }
         }
 
@@ -143,39 +152,17 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
-    private fun getTimeFromTP(): Calendar {
-        val timePicker = binding.timePicker
-
-        val now: Calendar = Calendar.getInstance()
-        val calendar: Calendar = now.clone() as Calendar
-
-        //현재 시간에서 타임피커의 시간, 분으로 교체
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            calendar.set(Calendar.HOUR_OF_DAY, timePicker.hour)
-            calendar.set(Calendar.MINUTE, timePicker.minute)
-        } else {
-            calendar.set(Calendar.HOUR_OF_DAY, timePicker.currentHour)
-            calendar.set(Calendar.MINUTE, timePicker.currentMinute)
+    private fun getNow(): Calendar {
+        val now = Calendar.getInstance().apply {
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
         }
-
-
-        //now 시간에서 1분 빼주기(현재 시간일 경우 하루를 추가해버림)
-        now.add(Calendar.MINUTE, -1)
-        //교체한 시간이 now보다 이전이면 하루를 추가
-        if (calendar.before(now)) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-
-        //알람 울리는 시간에 대비해 sec, millisecond = 0
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        return calendar
+        return now
     }
 
     private fun clearPeriodTextAndList() {
-        selectedItemIndex.clear()
-        binding.textViewPeriod.text = ""
+        selectedItemIndex.fill(false)
+        binding.textViewPeriod.text = getString(R.string.sample_option)
     }
 
     private fun updateToolbar() {
@@ -192,60 +179,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onRightNowButtonClicked(view: View) {
-        val timeNow = Calendar.getInstance()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            timePicker.hour = timeNow.get(Calendar.HOUR_OF_DAY)
-            timePicker.minute = timeNow.get(Calendar.MINUTE)
-
-        } else {
-            timePicker.currentHour = timeNow.get(Calendar.HOUR_OF_DAY)
-            timePicker.currentMinute = timeNow.get(Calendar.MINUTE)
-        }
+        TimePickerFunction.setTP(getNow())
     }
 
     fun onAdd10MinButtonClicked(view: View) {
-        addMinOnTP(10)
+        TimePickerFunction.addTP(10)
     }
 
     fun onAdd30MinButtonClicked(view: View) {
-        addMinOnTP(30)
+        TimePickerFunction.addTP(30)
     }
 
     fun onAdd1HourButtonClicked(view: View) {
-        addMinOnTP(60)
+        TimePickerFunction.addTP(60)
     }
 
-    private fun addMinOnTP(addValue: Int) {
-        var min: Int
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            min = timePicker.minute + addValue
-            timePicker.minute = (min % 60)
-            timePicker.hour += (min / 60)
-
-        } else {
-            min = timePicker.currentMinute + addValue
-            timePicker.currentMinute = (min % 60)
-            timePicker.currentHour += (min / 60)
-        }
-    }
 
     fun onCheckboxDialogClick(view: View) {
         clearPeriodTextAndList()
 
-        val orgTime = getTimeFromTP()
+        val orgTime = TimePickerFunction.getTP()
         val periodStringArray = listOf("1시간 30분", "3시간", "4시간 30분", "6시간", "7시간 30분", "9시간")
 
-
         val items = Array(6) { i ->
-            val min = 90 * (i + 1)
+            val tmpTime = TimePickerFunction.getCycleTime(orgTime, i + 1) //cycle은 양수이므로 1 더함
 
-            val orgTimeClone = orgTime.clone() as Calendar
-            orgTimeClone.add(Calendar.HOUR_OF_DAY, min / 60)
-            orgTimeClone.add(Calendar.MINUTE, min % 60)
-
-            val str = SimpleDateFormat("a hh:mm", Locale.getDefault()).format(orgTimeClone.time)
+            val str = SimpleDateFormat("a hh:mm", Locale.getDefault()).format(tmpTime.timeInMillis)
                 .toString() + " (%s)".format(periodStringArray[i])
 
             str
@@ -253,21 +212,18 @@ class MainActivity : AppCompatActivity() {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle("시간 선택")
-        builder.setMultiChoiceItems(items, null) { _, i, b ->
-            if (b) {
-                selectedItemIndex.add(i)
-            } else if (selectedItemIndex.contains(i)) {
-                selectedItemIndex.remove(i)
-            }
+        builder.setMultiChoiceItems(items, null) { _, ind, _ ->
+            selectedItemIndex[ind] = !selectedItemIndex[ind]
         }
 
         val listener = DialogInterface.OnClickListener { _, _ ->
-            val str = StringBuilder()
-            selectedItemIndex.sort()
-            for (i in selectedItemIndex) {
-                str.append(items[i] + "\n")
+            val sb = StringBuilder()
+            for (i in 0 until selectedItemIndex.size) {
+                if (selectedItemIndex[i]) {
+                    sb.append(items[i] + "\n")
+                }
             }
-            binding.textViewPeriod.text = str.toString()
+            binding.textViewPeriod.text = sb.trim().toString()
         }
 
 
@@ -281,13 +237,12 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
             this.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "알람음을 선택하세요.")
             this.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, true)
-            this.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
             this.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
         }
-        startActivityForResult(intent, ALARM_REQUEST_CODE)
+        ringtoneResultLauncher.launch(intent)
     }
 
-    fun setRingtoneUri(uri:Uri) {
+    fun setRingtoneUri(uri: Uri) {
         rt = RingtoneManager.getRingtone(this, uri)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -303,7 +258,7 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == ALARM_REQUEST_CODE && resultCode == RESULT_OK) {
+        if (requestCode == RINGTONE_REQUEST_CODE && resultCode == RESULT_OK) {
             uri = data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
             setRingtoneUri(uri!!)
 
@@ -314,27 +269,24 @@ class MainActivity : AppCompatActivity() {
 
 
     fun onSaveButtonClicked(view: View) {
-        if(rt.isPlaying)
+        if (rt.isPlaying)
             binding.btnRingtonePlay.performClick()
 
         if (selectedItemIndex.all { false }) {
             Toast.makeText(this, "알람 시간을 설정해주세요.", Toast.LENGTH_SHORT).show()
             return
         } else {
-            val orgTime = getTimeFromTP()
+            val orgTime = TimePickerFunction.getTP()
 
-            for (i in selectedItemIndex) {
-                val min = 90 * (i + 1)
+            for (i in 0 until selectedItemIndex.size) {
+                if (!selectedItemIndex[i]) continue
 
-                val orgTimeClone = orgTime.clone() as Calendar
-                orgTimeClone.add(Calendar.HOUR_OF_DAY, min / 60)
-                orgTimeClone.add(Calendar.MINUTE, min % 60)
+                val tmpTime = TimePickerFunction.getCycleTime(orgTime, i + 1)
 
                 val alarm = Alarm(
                     null,
-                    orgTimeClone.timeInMillis,
-                    uri.toString(),
-                    binding.textViewVolume.text.toString().toFloat() / MAX_VOLUME,
+                    tmpTime.timeInMillis,
+                    uri.toString(), binding.textViewVolume.text.toString().toFloat() / MAX_VOLUME,
                     binding.swtichVibration.isChecked
                 )
 

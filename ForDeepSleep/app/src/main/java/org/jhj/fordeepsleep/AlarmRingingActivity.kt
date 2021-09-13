@@ -67,7 +67,6 @@ class AlarmRingingActivity : AppCompatActivity() {
         registerReceiver(finishBR, filter)
 
         binding.btnFinish.setOnClickListener {
-            //서비스 종료하기
             stopRinging()
         }
 
@@ -84,6 +83,7 @@ class AlarmRingingActivity : AppCompatActivity() {
         unregisterReceiver(finishBR)
     }
 
+    // 서비스가 종료되면 브로드캐스트가 전송되어 이 액티비티도 종료됨.
     private fun stopRinging() {
         thread.interrupt()
         stopService(Intent(this, AlarmService::class.java))
