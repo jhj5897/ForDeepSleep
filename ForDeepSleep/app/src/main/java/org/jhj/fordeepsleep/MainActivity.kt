@@ -19,14 +19,12 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TimePicker
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
-import java.lang.NullPointerException
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,12 +46,26 @@ class MainActivity : AppCompatActivity() {
     private var ringtoneResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                uri = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-                setRingtoneUri(uri!!)
+                try {
+                    uri = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                    setRingtoneUri(uri!!)
 
-                binding.textViewAlarm.text = rt.getTitle(this)
+                    binding.textViewAlarm.text = rt.getTitle(this)
+                } catch(e:NullPointerException) {
+                    Toast.makeText(this, getString(R.string.text_pick_silent_uri), Toast.LENGTH_LONG).show()
+                }
             }
         }
+
+    private val onPlayButtonListener = View.OnClickListener {
+        if (rt.isPlaying) {
+            (it as ImageButton).setImageResource(R.drawable.ic_play_circle)
+            rt.stop()
+        } else {
+            (it as ImageButton).setImageResource(R.drawable.ic_pause_circle)
+            rt.play()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,15 +133,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         //알람음 재생 버튼 클릭 리스너
-        binding.btnRingtonePlay.setOnClickListener {
-            if (rt.isPlaying) {
-                (it as ImageButton).setImageResource(R.drawable.ic_play_circle)
-                rt.stop()
-            } else {
-                (it as ImageButton).setImageResource(R.drawable.ic_pause_circle)
-                rt.play()
-            }
-        }
+        binding.btnRingtonePlay.setOnClickListener(onPlayButtonListener)
 
         //취소 버튼 = 나가기
         binding.btnCancel.setOnClickListener { finish() }
@@ -237,6 +241,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
             this.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "알람음을 선택하세요.")
             this.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, true)
+            this.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
             this.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM)
         }
         ringtoneResultLauncher.launch(intent)
@@ -267,7 +272,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     fun onSaveButtonClicked(view: View) {
         if (rt.isPlaying)
             binding.btnRingtonePlay.performClick()
@@ -282,6 +286,10 @@ class MainActivity : AppCompatActivity() {
                 if (!selectedItemIndex[i]) continue
 
                 val tmpTime = TimePickerFunction.getCycleTime(orgTime, i + 1)
+
+                if(isTimeBefore(tmpTime)) {
+                    tmpTime.add(Calendar.DAY_OF_MONTH, 1)
+                }
 
                 val alarm = Alarm(
                     null,
@@ -304,6 +312,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun isTimeBefore(calendar: Calendar): Boolean = !calendar.after(getNow())
 
     //뒤로가기 버튼
     override fun onBackPressed() {

@@ -50,12 +50,7 @@ class TimePickerFunction {
 
         fun getCycleTime(calendar: Calendar, cycle: Int): Calendar {
             val time = calendar.clone() as Calendar
-
-            val addHour = 90 * cycle / 60
-            val addMin = 90 * cycle % 60
-
-            time.add(Calendar.HOUR_OF_DAY, addHour)
-            time.add(Calendar.MINUTE, addMin)
+            time.add(Calendar.MINUTE, 90*cycle)
 
             return time
         }
