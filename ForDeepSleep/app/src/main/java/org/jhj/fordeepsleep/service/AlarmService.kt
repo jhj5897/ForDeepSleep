@@ -36,6 +36,7 @@ class AlarmService : Service() {
         val vibrationOn = passedAlarm.vibrationOn
 
         if (volume != 0f) {
+            mediaPlayer.reset()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mediaPlayer.setAudioAttributes(
                     AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)

@@ -59,7 +59,7 @@ class AlarmRingingActivity : AppCompatActivity() {
 
         val currentTime = System.currentTimeMillis()
         binding.textCurrentTime.text = SimpleDateFormat("a hh시 mm분", Locale.getDefault()).format(currentTime)
-        binding.textCurrentDate.text = SimpleDateFormat("MM월 dd일 E요일", Locale.getDefault()).format(currentTime)
+        binding.textCurrentDate.text = SimpleDateFormat("MM월 dd일 EEEE", Locale.getDefault()).format(currentTime)
 
         handler = Handler(Looper.getMainLooper())
 
