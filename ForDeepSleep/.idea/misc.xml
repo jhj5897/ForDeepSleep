@@ -8,11 +8,20 @@
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/drawable/border_view.xml" value="0.1" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14791666666666667" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/drawable/rectangle_solid.xml" value="0.2713541666666667" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/activity_alarm_list.xml" value="0.2552083333333333" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/activity_alarm_ringing.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/activity_flip.xml" value="0.2552083333333333" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/activity_main.xml" value="0.2552083333333333" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/activity_test.xml" value="0.2552083333333333" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/activity_thread_test.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/card_layout_back.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/card_layout_fromt.xml" value="0.1" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/card_layout_front.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/item_card_back.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/item_card_front.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/recycler_alarm_flip_item.xml" value="0.1" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/recycler_alarm_item.xml" value="0.2552083333333333" />
+        <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/layout/recyclr_alarm_flip_item.xml" value="0.2552083333333333" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2713541666666667" />
         <entry key="..\:/Users/wkdgp/Desktop/Alarm app/ForDeepSleep/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.14791666666666667" />
       </map>

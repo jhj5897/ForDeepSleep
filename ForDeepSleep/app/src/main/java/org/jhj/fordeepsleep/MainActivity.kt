@@ -150,10 +150,10 @@ class MainActivity : AppCompatActivity() {
         val seekbar = binding.seekBarVolume.apply {
             max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
 
-            if(prefVolume==-1) {
-                progress = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+            progress = if(prefVolume==-1) {
+                audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
             } else {
-                progress = PreferenceManager.getInt(applicationContext, VOLUME)
+                PreferenceManager.getInt(applicationContext, VOLUME)
             }
             audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0)
             binding.textViewVolume.text = progress.toString()

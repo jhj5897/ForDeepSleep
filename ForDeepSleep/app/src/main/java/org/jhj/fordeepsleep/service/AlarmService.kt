@@ -57,11 +57,11 @@ class AlarmService : Service() {
 
         if (vibrationOn) {
             vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            val pattern = longArrayOf(WAIT, VIBRATE)
+            val pattern = longArrayOf(VIBRATE, WAIT, VIBRATE, WAIT)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val vibrationEffect =
-                    VibrationEffect.createWaveform(pattern, intArrayOf(50), 0)
+                    VibrationEffect.createWaveform(pattern, 0)
                 vibrator?.vibrate(vibrationEffect)
             } else {
 
