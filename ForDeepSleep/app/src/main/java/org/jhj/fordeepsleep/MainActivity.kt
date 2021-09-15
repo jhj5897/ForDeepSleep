@@ -31,16 +31,17 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val RINGTONE_REQUEST_CODE: Int = 101
-    private var MAX_VOLUME: Int = 0
+    private val URI = "URI"
+    private val VOLUME = "VOLUME"
+    private val VIBRATION = "VIBRATION"
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: AppDatabase
 
     private lateinit var rt: Ringtone
     private var uri: Uri? = null
-
+    private var MAX_VOLUME: Int = 0
     private var selectedItemIndex = BooleanArray(6)
-
     private var doubleBackToExitPressedOn = false
 
     private var ringtoneResultLauncher =
@@ -99,38 +100,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        initOptions()
+
         //타임피커 값 변경되면 선택 시간 초기화
         binding.timePicker.setOnTimeChangedListener { _, _, _ -> clearPeriodTextAndList() }
-
-        //알람음 초기화
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-        setRingtoneUri(uri!!)
-
-        binding.textViewAlarm.text = rt.getTitle(this)
-
-        //Seekbar 초기화
-        val seekbarVolume = binding.textViewVolume
-        MAX_VOLUME = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-
-        val seekbar = binding.seekBarVolume.apply {
-            max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-            progress = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
-            seekbarVolume.text = audioManager.getStreamVolume(AudioManager.STREAM_ALARM).toString()
-        }
-
-        seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
-            override fun onProgressChanged(sb: SeekBar?, progress: Int, b: Boolean) {
-                seekbarVolume.text = progress.toString()
-                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0)
-            }
-
-            override fun onStartTrackingTouch(s: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(s: SeekBar?) {
-            }
-        })
 
         //알람음 재생 버튼 클릭 리스너
         binding.btnRingtonePlay.setOnClickListener(onPlayButtonListener)
@@ -154,6 +127,59 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         invalidateOptionsMenu()
         super.onResume()
+    }
+
+    private fun initOptions() {
+        //알람음 초기화
+        val prefUri = PreferenceManager.getString(applicationContext, URI)
+        val prefVolume = PreferenceManager.getInt(applicationContext, VOLUME)
+
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        uri = if(prefUri=="") {
+            RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        } else {
+            Uri.parse(prefUri)
+        }
+        setRingtoneUri(uri!!)
+
+        binding.textViewAlarm.text = rt.getTitle(this)
+
+        //Seekbar 초기화
+        MAX_VOLUME = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+
+        val seekbar = binding.seekBarVolume.apply {
+            max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+
+            if(prefVolume==-1) {
+                progress = audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
+            } else {
+                progress = PreferenceManager.getInt(applicationContext, VOLUME)
+            }
+            audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0)
+            binding.textViewVolume.text = progress.toString()
+        }
+
+        seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(sb: SeekBar?, progress: Int, b: Boolean) {
+                binding.textViewVolume.text = progress.toString()
+                audioManager.setStreamVolume(AudioManager.STREAM_ALARM, progress, 0)
+            }
+
+            override fun onStartTrackingTouch(s: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(s: SeekBar?) {
+            }
+        })
+
+        //진동 초기화
+        binding.switchVibration.isChecked = PreferenceManager.getBoolean(this, VIBRATION)
+    }
+
+    private fun saveOptions(uri:Any, volume:Int, vibration:Boolean) {
+        PreferenceManager.setString(applicationContext, URI, uri.toString())
+        PreferenceManager.setInt(applicationContext, VOLUME, volume)
+        PreferenceManager.setBoolean(applicationContext, VIBRATION, vibration)
     }
 
     private fun getNow(): Calendar {
@@ -295,7 +321,7 @@ class MainActivity : AppCompatActivity() {
                     null,
                     tmpTime.timeInMillis,
                     uri.toString(), binding.textViewVolume.text.toString().toFloat() / MAX_VOLUME,
-                    binding.swtichVibration.isChecked
+                    binding.switchVibration.isChecked
                 )
 
                 db.alarmDao().insertAll(alarm)
@@ -304,6 +330,7 @@ class MainActivity : AppCompatActivity() {
 
             //저장 완료 후 화면 초기화
             Toast.makeText(this, "알람이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+            saveOptions(uri!!, binding.textViewVolume.text.toString().toInt(), binding.switchVibration.isChecked)
             onRightNowButtonClicked(view)
             clearPeriodTextAndList()
 

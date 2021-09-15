@@ -12,6 +12,7 @@ import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.service.AlarmService
 import org.jhj.fordeepsleep.service.BootReceiver
 import java.io.Serializable
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AlarmFunction {
@@ -40,8 +41,7 @@ class AlarmFunction {
 
             val pendingIntent = PendingIntent.getService(context, alarm.id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-            alarmManager.set(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5000, pendingIntent)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
         }
 
         fun deleteAlarmIntent(id:Int?) {

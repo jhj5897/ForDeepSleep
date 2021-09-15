@@ -29,7 +29,6 @@ class AlarmRingingActivity : AppCompatActivity() {
         for (i in 1..60) {
             try {
                 Thread.sleep(1000)
-                Log.d("TAG", "${i} second")
             } catch (e: InterruptedException) {
                 return@Runnable
             }

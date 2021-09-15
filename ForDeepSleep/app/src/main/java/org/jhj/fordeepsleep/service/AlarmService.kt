@@ -37,6 +37,7 @@ class AlarmService : Service() {
 
         if (volume != 0f) {
             mediaPlayer.reset()
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mediaPlayer.setAudioAttributes(
                     AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -45,6 +46,7 @@ class AlarmService : Service() {
             } else {
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM)
             }
+
             mediaPlayer.isLooping = true
             mediaPlayer.setDataSource(applicationContext, ringtoneUri)
             mediaPlayer.setVolume(volume, volume)
@@ -67,6 +69,7 @@ class AlarmService : Service() {
                     pattern, 0)
             }
         }
+        AppDatabase.getInstance(applicationContext).alarmDao().deleteById(passedAlarm.id!!)
 
         val intent = Intent(this, AlarmRingingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -78,7 +81,6 @@ class AlarmService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         sendBroadcast(Intent("org.jhj.fordeepsleep.finish"))
-        AppDatabase.getInstance(applicationContext).alarmDao().deleteById(passedAlarm.id!!)
 
         if(mediaPlayer.isPlaying) {
             mediaPlayer.stop()
