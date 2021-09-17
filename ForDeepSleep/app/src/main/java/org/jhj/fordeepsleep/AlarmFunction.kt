@@ -4,21 +4,16 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.service.AlarmService
-import org.jhj.fordeepsleep.service.BootReceiver
-import java.io.Serializable
-import java.text.SimpleDateFormat
-import java.util.*
 
 class AlarmFunction {
     companion object{
-        val ALARM_BUNDLE = "alarmBundle"
-        val ALARM_INSTANCE = "alarm"
+        const val ALARM_BUNDLE = "alarmBundle"
+        const val ALARM_INSTANCE = "alarm"
 
         private lateinit var context: Context
         private lateinit var alarmManager:AlarmManager
@@ -35,13 +30,14 @@ class AlarmFunction {
         fun setAlarmIntent(alarm: Alarm) {
             //최근 알람만 알람매니저로 설정(브로드캐스트에 대해 좀 더 알아보기)
 
-            var bundle = Bundle()
+            val bundle = Bundle()
             bundle.putParcelable(ALARM_INSTANCE, alarm)
             serviceIntent.putExtra(ALARM_BUNDLE, bundle)
 
             val pendingIntent = PendingIntent.getService(context, alarm.id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
+
         }
 
         fun deleteAlarmIntent(id:Int?) {

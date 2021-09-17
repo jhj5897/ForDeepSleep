@@ -38,9 +38,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: AppDatabase
 
+    private lateinit var audioManager:AudioManager
+    private var MAX_VOLUME: Float = 0.0f
     private lateinit var rt: Ringtone
     private var uri: Uri? = null
-    private var MAX_VOLUME: Int = 0
     private var selectedItemIndex = BooleanArray(6)
     private var doubleBackToExitPressedOn = false
 
@@ -48,7 +49,9 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 try {
-                    uri = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                    val tmpUri: Uri = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                        ?: throw NullPointerException()
+                    uri = tmpUri
                     setRingtoneUri(uri!!)
 
                     binding.textViewAlarm.text = rt.getTitle(this)
@@ -76,8 +79,10 @@ class MainActivity : AppCompatActivity() {
         val toolbar = binding.toolbar
 
         db = AppDatabase.getInstance(applicationContext)
-        TimePickerFunction.getInstance(binding.timePicker)
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        MAX_VOLUME = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM).toFloat()
 
+        TimePickerFunction.getInstance(binding.timePicker)
         AlarmFunction.init(applicationContext)
 
         setSupportActionBar(toolbar)
@@ -134,7 +139,6 @@ class MainActivity : AppCompatActivity() {
         val prefUri = PreferenceManager.getString(applicationContext, URI)
         val prefVolume = PreferenceManager.getInt(applicationContext, VOLUME)
 
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         uri = if(prefUri=="") {
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         } else {
@@ -145,10 +149,8 @@ class MainActivity : AppCompatActivity() {
         binding.textViewAlarm.text = rt.getTitle(this)
 
         //Seekbar 초기화
-        MAX_VOLUME = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
-
         val seekbar = binding.seekBarVolume.apply {
-            max = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM)
+            max = MAX_VOLUME.toInt()
 
             progress = if(prefVolume==-1) {
                 audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
@@ -191,7 +193,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun clearPeriodTextAndList() {
-        selectedItemIndex.fill(false)
+        Arrays.fill(selectedItemIndex, false)
         binding.textViewPeriod.text = getString(R.string.sample_option)
     }
 
@@ -302,7 +304,7 @@ class MainActivity : AppCompatActivity() {
         if (rt.isPlaying)
             binding.btnRingtonePlay.performClick()
 
-        if (selectedItemIndex.all { false }) {
+        if (selectedItemIndex.all { b-> b==false }) {
             Toast.makeText(this, "알람 시간을 설정해주세요.", Toast.LENGTH_SHORT).show()
             return
         } else {
@@ -320,7 +322,8 @@ class MainActivity : AppCompatActivity() {
                 val alarm = Alarm(
                     null,
                     tmpTime.timeInMillis,
-                    uri.toString(), binding.textViewVolume.text.toString().toFloat() / MAX_VOLUME,
+                    uri.toString(),
+                    audioManager.getStreamVolume(AudioManager.STREAM_ALARM) / MAX_VOLUME,
                     binding.switchVibration.isChecked
                 )
 

@@ -6,7 +6,7 @@ import java.util.*
 
 class TimePickerFunction {
     companion object {
-        private lateinit var timePicker:TimePicker
+        private lateinit var timePicker: TimePicker
 
         fun getInstance(timePicker: TimePicker) {
             this.timePicker = timePicker
@@ -15,13 +15,8 @@ class TimePickerFunction {
         fun getTP(): Calendar {
             val tpTime = Calendar.getInstance()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                tpTime.set(Calendar.HOUR_OF_DAY, timePicker.hour)
-                tpTime.set(Calendar.MINUTE, timePicker.minute)
-            } else {
-                tpTime.set(Calendar.HOUR_OF_DAY, timePicker.currentHour)
-                tpTime.set(Calendar.MINUTE, timePicker.currentMinute)
-            }
+            tpTime.set(Calendar.HOUR_OF_DAY, timePicker.hour)
+            tpTime.set(Calendar.MINUTE, timePicker.minute)
             tpTime.set(Calendar.SECOND, 0)
             tpTime.set(Calendar.MILLISECOND, 0)
 
@@ -29,13 +24,8 @@ class TimePickerFunction {
         }
 
         private fun setTP(hour: Int, min: Int) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                timePicker.hour = hour
-                timePicker.minute = min
-            } else {
-                timePicker.currentHour = hour
-                timePicker.currentMinute = min
-            }
+            timePicker.hour = hour
+            timePicker.minute = min
         }
 
         fun setTP(calendar: Calendar) {
@@ -50,7 +40,7 @@ class TimePickerFunction {
 
         fun getCycleTime(calendar: Calendar, cycle: Int): Calendar {
             val time = calendar.clone() as Calendar
-            time.add(Calendar.MINUTE, 90*cycle)
+            time.add(Calendar.MINUTE, 90 * cycle)
 
             return time
         }

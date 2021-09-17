@@ -8,6 +8,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
+import android.util.Log
 import org.jhj.fordeepsleep.AlarmFunction
 import org.jhj.fordeepsleep.AlarmRingingActivity
 import org.jhj.fordeepsleep.MainActivity
