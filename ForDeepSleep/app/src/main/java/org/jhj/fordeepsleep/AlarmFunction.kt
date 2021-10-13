@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.jhj.fordeepsleep.room.Alarm
@@ -28,15 +27,13 @@ class AlarmFunction {
 
 
         fun setAlarmIntent(alarm: Alarm) {
-            //최근 알람만 알람매니저로 설정(브로드캐스트에 대해 좀 더 알아보기)
-
             val bundle = Bundle()
             bundle.putParcelable(ALARM_INSTANCE, alarm)
             serviceIntent.putExtra(ALARM_BUNDLE, bundle)
 
             val pendingIntent = PendingIntent.getService(context, alarm.id!!, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarm.alarmTime, pendingIntent)
 
         }
 

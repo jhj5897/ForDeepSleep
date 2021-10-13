@@ -49,7 +49,7 @@ class AlarmService : Service() {
             }
 
             mediaPlayer.isLooping = true
-            mediaPlayer.setDataSource(applicationContext, ringtoneUri)
+            mediaPlayer.setDataSource(this, ringtoneUri)
             mediaPlayer.setVolume(volume, volume)
             mediaPlayer.prepare()
             mediaPlayer.start()
@@ -70,7 +70,7 @@ class AlarmService : Service() {
                     pattern, 0)
             }
         }
-        AppDatabase.getInstance(applicationContext).alarmDao().deleteById(passedAlarm.id!!)
+        AppDatabase.getInstance(this).alarmDao().deleteById(passedAlarm.id!!)
 
         val intent = Intent(this, AlarmRingingActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

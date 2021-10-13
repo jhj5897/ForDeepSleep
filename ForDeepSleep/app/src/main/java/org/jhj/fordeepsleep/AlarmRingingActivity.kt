@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.util.Log
 import android.view.WindowManager
 import com.bumptech.glide.Glide
 import org.jhj.fordeepsleep.databinding.ActivityAlarmRingingBinding

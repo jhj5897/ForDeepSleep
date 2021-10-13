@@ -1,8 +1,7 @@
 package org.jhj.fordeepsleep
 
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.Ringtone
@@ -25,6 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
+import org.jhj.fordeepsleep.service.BootReceiver
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var db: AppDatabase
 
-    private lateinit var audioManager:AudioManager
+    private lateinit var audioManager: AudioManager
     private var MAX_VOLUME: Float = 0.0f
     private lateinit var rt: Ringtone
     private var uri: Uri? = null
@@ -49,14 +49,19 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 try {
-                    val tmpUri: Uri = result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-                        ?: throw NullPointerException()
+                    val tmpUri: Uri =
+                        result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                            ?: throw NullPointerException()
                     uri = tmpUri
                     setRingtoneUri(uri!!)
 
                     binding.textViewAlarm.text = rt.getTitle(this)
-                } catch(e:NullPointerException) {
-                    Toast.makeText(this, getString(R.string.text_pick_silent_uri), Toast.LENGTH_LONG).show()
+                } catch (e: NullPointerException) {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.text_pick_silent_uri),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -75,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        volumeControlStream = AudioManager.STREAM_ALARM
 
         val toolbar = binding.toolbar
 
@@ -139,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         val prefUri = PreferenceManager.getString(applicationContext, URI)
         val prefVolume = PreferenceManager.getInt(applicationContext, VOLUME)
 
-        uri = if(prefUri=="") {
+        uri = if (prefUri == "") {
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         } else {
             Uri.parse(prefUri)
@@ -152,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         val seekbar = binding.seekBarVolume.apply {
             max = MAX_VOLUME.toInt()
 
-            progress = if(prefVolume==-1) {
+            progress = if (prefVolume == -1) {
                 audioManager.getStreamVolume(AudioManager.STREAM_ALARM)
             } else {
                 PreferenceManager.getInt(applicationContext, VOLUME)
@@ -178,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         binding.switchVibration.isChecked = PreferenceManager.getBoolean(this, VIBRATION)
     }
 
-    private fun saveOptions(uri:Any, volume:Int, vibration:Boolean) {
+    private fun saveOptions(uri: Any, volume: Int, vibration: Boolean) {
         PreferenceManager.setString(applicationContext, URI, uri.toString())
         PreferenceManager.setInt(applicationContext, VOLUME, volume)
         PreferenceManager.setBoolean(applicationContext, VIBRATION, vibration)
@@ -304,7 +310,7 @@ class MainActivity : AppCompatActivity() {
         if (rt.isPlaying)
             binding.btnRingtonePlay.performClick()
 
-        if (selectedItemIndex.all { b-> b==false }) {
+        if (selectedItemIndex.all { b -> b == false }) {
             Toast.makeText(this, "알람 시간을 설정해주세요.", Toast.LENGTH_SHORT).show()
             return
         } else {
@@ -315,7 +321,7 @@ class MainActivity : AppCompatActivity() {
 
                 val tmpTime = TimePickerFunction.getCycleTime(orgTime, i + 1)
 
-                if(isTimeBefore(tmpTime)) {
+                if (isTimeBefore(tmpTime)) {
                     tmpTime.add(Calendar.DAY_OF_MONTH, 1)
                 }
 
@@ -333,7 +339,11 @@ class MainActivity : AppCompatActivity() {
 
             //저장 완료 후 화면 초기화
             Toast.makeText(this, "알람이 저장되었습니다.", Toast.LENGTH_SHORT).show()
-            saveOptions(uri!!, binding.textViewVolume.text.toString().toInt(), binding.switchVibration.isChecked)
+            saveOptions(
+                uri!!,
+                binding.textViewVolume.text.toString().toInt(),
+                binding.switchVibration.isChecked
+            )
             onRightNowButtonClicked(view)
             clearPeriodTextAndList()
 
