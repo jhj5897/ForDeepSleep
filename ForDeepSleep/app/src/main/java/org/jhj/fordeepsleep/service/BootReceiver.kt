@@ -23,7 +23,6 @@ class BootReceiver : BroadcastReceiver() {
             for (alarm in db.alarmDao().getAll()) {
                 AlarmFunction.setAlarmIntent(alarm)
             }
-            Toast.makeText(context, "알람 재설정 완료", Toast.LENGTH_LONG).show()
         }
     }
 }
