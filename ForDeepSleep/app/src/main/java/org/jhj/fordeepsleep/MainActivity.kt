@@ -1,7 +1,6 @@
 package org.jhj.fordeepsleep
 
 import android.content.*
-import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.Ringtone
@@ -21,10 +20,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
-import org.jhj.fordeepsleep.service.BootReceiver
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
@@ -57,11 +56,6 @@ class MainActivity : AppCompatActivity() {
 
                     binding.textViewAlarm.text = rt.getTitle(this)
                 } catch (e: NullPointerException) {
-                    Toast.makeText(
-                        this,
-                        getString(R.string.text_pick_silent_uri),
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             }
         }
@@ -121,12 +115,22 @@ class MainActivity : AppCompatActivity() {
 
         //취소 버튼 = 나가기
         binding.btnCancel.setOnClickListener { finish() }
+
+        val shown = PreferenceManager.getBoolean(this, "dialogShown")
+        Log.d("TAG", "$shown")
+        if (!shown) {
+            AlertDialog.Builder(this)
+                .setMessage(R.string.first_use_dialog)
+                .setPositiveButton(R.string.dialog_accept, null)
+                .show()
+
+            PreferenceManager.setBoolean(this, "dialogShown", true)
+        }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.alarm_menu, menu)
-
         return super.onCreateOptionsMenu(menu)
     }
 

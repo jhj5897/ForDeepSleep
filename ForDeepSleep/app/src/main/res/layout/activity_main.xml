@@ -303,7 +303,7 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle_solid"
             android:text="@string/btn_cancel"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/btnSave"
@@ -313,7 +313,7 @@
             android:background="@drawable/rectangle_solid"
             android:onClick="onSaveButtonClicked"
             android:text="@string/btn_save"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

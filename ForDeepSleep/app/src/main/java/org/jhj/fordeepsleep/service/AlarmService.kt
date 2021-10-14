@@ -17,7 +17,7 @@ import org.jhj.fordeepsleep.room.AppDatabase
 
 class AlarmService : Service() {
     private val VIBRATE = 3000L
-    private val WAIT = 1000L
+    private val WAIT = 500L
 
     private val mediaPlayer = MediaPlayer()
     private var vibrator: Vibrator? = null
