@@ -1,17 +1,9 @@
 package org.jhj.fordeepsleep.service
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import org.jhj.fordeepsleep.AlarmFunction
-import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
 
 class BootReceiver : BroadcastReceiver() {

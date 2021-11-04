@@ -5,10 +5,10 @@ import android.content.SharedPreferences
 
 class PreferenceManager {
     companion object {
-        const val PREFERENCES_NAME = "save_option_preference"
-        const val DEFAULT_VALUE_STRING = ""
-        const val DEFAULT_VALUE_BOOLEAN = false
-        const val DEFAULT_VALUE_INT = -1
+        private const val PREFERENCES_NAME = "save_option_preference"
+        private const val DEFAULT_VALUE_STRING = ""
+        private const val DEFAULT_VALUE_BOOLEAN = false
+        private const val DEFAULT_VALUE_INT = -1
 
         private fun getPreferences(context: Context):SharedPreferences{
             return context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
@@ -16,23 +16,23 @@ class PreferenceManager {
 
         fun setString(context:Context, key:String, value:String) {
             val prefs = getPreferences(context)
-            var editor = prefs.edit()
+            val editor = prefs.edit()
             editor.putString(key, value)
-            editor.commit()
+            editor.apply()
         }
 
         fun setBoolean(context:Context, key:String, value:Boolean) {
             val prefs = getPreferences(context)
-            var editor = prefs.edit()
+            val editor = prefs.edit()
             editor.putBoolean(key, value)
-            editor.commit()
+            editor.apply()
         }
 
         fun setInt(context:Context, key:String, value:Int) {
             val prefs = getPreferences(context)
-            var editor = prefs.edit()
+            val editor = prefs.edit()
             editor.putInt(key, value)
-            editor.commit()
+            editor.apply()
         }
 
         fun getString(context:Context, key:String):String {
@@ -52,9 +52,9 @@ class PreferenceManager {
 
         fun removeKey(context:Context, key:String) {
             val prefs = getPreferences(context)
-            var editor = prefs.edit()
+            val editor = prefs.edit()
             editor.remove(key)
-            editor.commit()
+            editor.apply()
         }
     }
 }

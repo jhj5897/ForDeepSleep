@@ -4,14 +4,11 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.*
-import android.util.Log
 import org.jhj.fordeepsleep.AlarmFunction
 import org.jhj.fordeepsleep.AlarmRingingActivity
-import org.jhj.fordeepsleep.MainActivity
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
 
@@ -39,14 +36,10 @@ class AlarmService : Service() {
         if (volume != 0f) {
             mediaPlayer.reset()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mediaPlayer.setAudioAttributes(
-                    AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_ALARM).build()
-                )
-            } else {
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM)
-            }
+            mediaPlayer.setAudioAttributes(
+                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_ALARM).build()
+            )
 
             mediaPlayer.isLooping = true
             mediaPlayer.setDataSource(this, ringtoneUri)

@@ -2,7 +2,6 @@ package org.jhj.fordeepsleep
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.jhj.fordeepsleep.databinding.ActivityAlarmListBinding
 import org.jhj.fordeepsleep.room.AppDatabase
@@ -16,7 +15,7 @@ class AlarmListActivity : AppCompatActivity() {
         binding = ActivityAlarmListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var toolbar = binding.toolbar
+        val toolbar = binding.toolbar
 
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {

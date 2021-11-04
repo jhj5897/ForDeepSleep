@@ -25,6 +25,8 @@
     <string name="sample_volume">00</string>
     <string name="sample_vibration">default 진동</string>
 
-    <string name="first_use_dialog">일부 버전에서는 정상적인 동작이 안될 수도 있으므로 \'다른 앱 위에 표시\'를 허용해주시기 바랍니다.\n감사합니다.</string>
-    <string name="dialog_accept">확인</string>
+    <string name="dialog_title">사용 전 초기 설정</string>
+    <string name="dialog_content">일부 버전에서는 정상적인 작동을 위해 \"다른 앱 위에 표시\"를 허용해주시고 \"배터리 최적화\"를 제외해주시기 바랍니다.</string>
+    <string name="dialog_set_settings">설정하러 가기</string>
+    <string name="dialog_check">확인</string>
 </resources>

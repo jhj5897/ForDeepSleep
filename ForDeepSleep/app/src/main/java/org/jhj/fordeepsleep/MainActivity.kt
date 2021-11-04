@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.provider.Settings
 import android.view.Menu
 import android.view.View
 import android.widget.ImageButton
@@ -20,7 +20,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.jhj.fordeepsleep.databinding.ActivityMainBinding
 import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
@@ -117,14 +116,8 @@ class MainActivity : AppCompatActivity() {
         binding.btnCancel.setOnClickListener { finish() }
 
         val shown = PreferenceManager.getBoolean(this, "dialogShown")
-        Log.d("TAG", "$shown")
         if (!shown) {
-            AlertDialog.Builder(this)
-                .setMessage(R.string.first_use_dialog)
-                .setPositiveButton(R.string.dialog_accept, null)
-                .show()
-
-            PreferenceManager.setBoolean(this, "dialogShown", true)
+            showDialog()
         }
     }
 
@@ -298,18 +291,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == RINGTONE_REQUEST_CODE && resultCode == RESULT_OK) {
-            uri = data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
-            setRingtoneUri(uri!!)
-
-            binding.textViewAlarm.text = rt.getTitle(this)
-
-        }
-    }
-
     fun onSaveButtonClicked(view: View) {
         if (rt.isPlaying)
             binding.btnRingtonePlay.performClick()
@@ -357,6 +338,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun isTimeBefore(calendar: Calendar): Boolean = !calendar.after(getNow())
+
+    private fun showDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.dialog_title)
+            .setMessage(R.string.dialog_content)
+            .setPositiveButton(R.string.dialog_set_settings) { _, _ ->
+                val intent = Intent()
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                intent.addCategory(Intent.CATEGORY_DEFAULT)
+                intent.data = Uri.parse("package:"+packageName)
+                startActivity(intent)
+            }
+            .setNegativeButton(R.string.dialog_check, null)
+            .show()
+
+        PreferenceManager.setBoolean(this, "dialogShown", true)
+    }
 
     //뒤로가기 버튼
     override fun onBackPressed() {
