@@ -4,6 +4,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,7 @@ class AlarmListAdapter(var alarmList: MutableList<Alarm>) :
 
             binding.front.textAlarmTime.text =
                 SimpleDateFormat("MM월 dd일 a hh시 mm분").format(alarm.alarmTime)
+            binding.front.textAlarmTime.isSelected = true
 
             leftTime = alarm.getLeftTimeInMillis()
 
@@ -77,6 +79,7 @@ class AlarmListAdapter(var alarmList: MutableList<Alarm>) :
                 RingtoneManager.getRingtone(binding.root.context, Uri.parse(alarm.ringtoneUri))
 
             binding.back.textUri.text = "알람음 : ${ringtone.getTitle(binding.root.context)}"
+            binding.back.textUri.isSelected = true
             binding.back.textVibration.text = if (alarm.vibrationOn) { "진동 켜짐" } else { "진동 꺼짐" }
 
             binding.btnDelete.setOnClickListener(this)
