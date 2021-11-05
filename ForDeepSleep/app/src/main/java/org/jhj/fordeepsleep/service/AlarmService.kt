@@ -13,8 +13,8 @@ import org.jhj.fordeepsleep.room.Alarm
 import org.jhj.fordeepsleep.room.AppDatabase
 
 class AlarmService : Service() {
-    private val VIBRATE = 3000L
-    private val WAIT = 500L
+    private val VIBRATE = 2000L
+    private val WAIT = 1500L
 
     private val mediaPlayer = MediaPlayer()
     private var vibrator: Vibrator? = null
@@ -23,6 +23,11 @@ class AlarmService : Service() {
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -50,17 +55,16 @@ class AlarmService : Service() {
 
 
         if (vibrationOn) {
-            vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            val pattern = longArrayOf(VIBRATE, WAIT, VIBRATE, WAIT)
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val vibrationEffect =
-                    VibrationEffect.createWaveform(pattern, 0)
-                vibrator?.vibrate(vibrationEffect)
-            } else {
-
                 vibrator?.vibrate(
-                    pattern, 0)
+                    VibrationEffect.createWaveform(longArrayOf(0, VIBRATE, WAIT), 1),
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .build()
+                )
+            } else {
+                vibrator?.vibrate(longArrayOf(0, VIBRATE, WAIT), 1)
             }
         }
         AppDatabase.getInstance(this).alarmDao().deleteById(passedAlarm.id!!)
@@ -76,11 +80,11 @@ class AlarmService : Service() {
         super.onDestroy()
         sendBroadcast(Intent("org.jhj.fordeepsleep.finish"))
 
-        if(mediaPlayer.isPlaying) {
+        if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
             mediaPlayer.release()
         }
-        if(passedAlarm.vibrationOn) {
+        if (passedAlarm.vibrationOn) {
             vibrator?.cancel()
         }
     }
